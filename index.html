@@ -32,11 +32,11 @@
             color: var(--text);
             margin: 0;
             padding: 20px;
-            padding-bottom: 100px; /* Space for fixed button */
+            padding-bottom: 100px; 
             -webkit-tap-highlight-color: transparent;
         }
 
-        h1, h2 { text-align: center; margin: 10px 0; }
+        h1, h2, h3 { text-align: center; margin: 10px 0; }
         
         /* Setup Screen */
         .setup-container {
@@ -45,7 +45,7 @@
             text-align: center;
         }
         
-        input[type="text"] {
+        input[type="text"], input[type="tel"] {
             width: 70%;
             padding: 15px;
             border-radius: 12px;
@@ -66,11 +66,13 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
+            margin-bottom: 10px;
         }
         
         .btn:disabled { opacity: 0.5; }
+        .btn-secondary { background: var(--subtext); }
+        .btn-outline { background: transparent; color: var(--red); border: 1px solid var(--red); }
 
-        /* Player List Chips */
         .chip-container {
             display: flex;
             flex-wrap: wrap;
@@ -87,6 +89,18 @@
         }
 
         /* Game Screen */
+        .top-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .top-controls .btn {
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
         .header-info {
             display: flex;
             justify-content: space-between;
@@ -151,6 +165,8 @@
             font-size: 24px;
             color: var(--text);
             font-weight: 600;
+            padding: 0;
+            margin: 0;
         }
 
         .round-input:focus {
@@ -163,7 +179,6 @@
             color: var(--subtext);
         }
 
-        /* Bottom Fixed Action Bar */
         .action-bar {
             position: fixed;
             bottom: 20px;
@@ -172,10 +187,62 @@
             z-index: 100;
         }
 
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background: var(--bg);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            border-radius: 16px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .history-table th, .history-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--input-bg);
+        }
+        
+        .history-table th {
+            background: var(--blue);
+            color: white;
+            font-size: 14px;
+        }
+
+        .edit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
         .winner-crown { color: #FFD700; margin-right: 5px; }
         
-        /* Utility */
-        .hidden { display: none; }
+        .hidden { display: none !important; }
         .lowest-score { color: var(--green); }
         .high-score { color: var(--red); }
 
@@ -188,25 +255,79 @@
         <p style="color:var(--subtext)">Add 4+ players</p>
         
         <input type="text" id="newPlayerName" placeholder="Player Name" autocomplete="off">
-        <button class="btn" onclick="addPlayer()" style="margin-bottom: 20px;">Add</button>
+        <button class="btn" onclick="addPlayer()">Add</button>
         
         <div class="chip-container" id="playerChips"></div>
         
         <button id="startBtn" class="btn" onclick="startGame()" disabled style="background: var(--green);">Start Game</button>
+        
+        <div style="margin-top: 30px; border-top: 1px solid var(--subtext); padding-top: 20px;" id="pastGamesSection" class="hidden">
+            <h3>Saved Games & Leaderboard</h3>
+            <p style="color:var(--subtext); font-size:14px; margin-bottom: 15px;">Previous games are stored in your browser.</p>
+            <button class="btn btn-secondary" onclick="openLeaderboard()">View Leaderboard</button>
+            <button class="btn btn-outline" onclick="clearPastGames()">Clear History</button>
+        </div>
     </div>
 
     <div id="gameView" class="hidden">
-        <div class="header-info">
-            <h2 id="roundDisplay">Round 1</h2>
-            <div class="round-badge" id="roundBadge">1 / 13</div>
+        <div class="top-controls">
+            <button class="btn btn-secondary" onclick="openHistory()">Game History</button>
+            <button id="editRoundBtn" class="btn btn-secondary hidden" onclick="openEditModal()">Edit Last Round</button>
         </div>
 
-        <div id="cardsContainer">
-            </div>
+        <div class="header-info">
+            <h2 id="roundDisplay">Round 1</h2>
+            <div class="round-badge" id="roundBadge" onclick="goHome()" style="cursor: pointer;">1 / 13</div>
+        </div>
+
+        <div id="cardsContainer"></div>
 
         <div class="action-bar">
             <button id="nextRoundBtn" class="btn" onclick="finishRound()">Finish Round 1</button>
-            <button id="resetBtn" class="btn hidden" onclick="resetGame()" style="background: var(--subtext);">New Game</button>
+            <button id="resetBtn" class="btn hidden" onclick="startNewGame()" style="background: var(--blue);">Start New Game</button>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Game History</h2>
+            <div id="historyTableContainer"></div>
+            <button class="btn" onclick="closeModal('historyModal')" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Edit Round <span id="editRoundNumber"></span></h2>
+            <div id="editInputsContainer"></div>
+            <button class="btn" onclick="saveEditedRound()" style="margin-top: 20px; background: var(--green);">Save Changes</button>
+            <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="leaderboardModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>All-Time Leaderboard</h2>
+            <div id="leaderboardContainer"></div>
+            <button class="btn" onclick="closeModal('leaderboardModal')" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <div id="confirmClearModal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align: center;">
+            <h2>Clear History?</h2>
+            <p style="color:var(--subtext); margin-bottom: 20px;">Are you sure you want to delete all saved past games? This cannot be undone.</p>
+            <button class="btn" onclick="confirmClearPastGames()" style="background: var(--red);">Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal('confirmClearModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="confirmNewGameModal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align: center;">
+            <h2>Start New Game?</h2>
+            <p style="color:var(--subtext); margin-bottom: 20px;">Do you want to start a new game with the exact same players?</p>
+            <button class="btn" onclick="confirmNewGame()" style="background: var(--green);">Yes, Start</button>
+            <button class="btn btn-secondary" onclick="closeModal('confirmNewGameModal')">Cancel</button>
         </div>
     </div>
 
@@ -215,12 +336,68 @@
         let currentRound = 1;
         const TOTAL_ROUNDS = 13;
 
+        // --- Initialization & Storage ---
+        window.onload = function() {
+            loadGame();
+            checkPastGames();
+        };
+
+        function saveGame() {
+            const state = { players, currentRound };
+            localStorage.setItem('kaboCurrentState', JSON.stringify(state));
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('kaboCurrentState');
+            if (saved) {
+                const state = JSON.parse(saved);
+                players = state.players;
+                currentRound = state.currentRound;
+                document.getElementById('setupView').classList.add('hidden');
+                document.getElementById('gameView').classList.remove('hidden');
+                renderGame();
+            }
+        }
+
+        function archiveCurrentGame() {
+            let pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
+            pastGames.push({
+                date: new Date().toLocaleString(),
+                players: JSON.parse(JSON.stringify(players))
+            });
+            localStorage.setItem('kaboPastGames', JSON.stringify(pastGames));
+            localStorage.removeItem('kaboCurrentState');
+        }
+
+        function checkPastGames() {
+            const pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
+            if (pastGames.length > 0) {
+                document.getElementById('pastGamesSection').classList.remove('hidden');
+            } else {
+                document.getElementById('pastGamesSection').classList.add('hidden');
+            }
+        }
+
+        function clearPastGames() {
+            document.getElementById('confirmClearModal').classList.remove('hidden');
+        }
+
+        function confirmClearPastGames() {
+            localStorage.removeItem('kaboPastGames');
+            checkPastGames();
+            closeModal('confirmClearModal');
+        }
+
+        // --- Core Logic ---
+        function getPlayerTotal(player) {
+            return player.scores.reduce((sum, score) => sum + score, 0);
+        }
+
         function addPlayer() {
             const input = document.getElementById('newPlayerName');
             const name = input.value.trim();
             if(name) {
-                // Initialize score to 0
-                players.push({ name: name, score: 0 });
+                players.push({ name: name, scores: [] });
                 renderChips();
                 input.value = '';
                 input.focus();
@@ -239,98 +416,208 @@
         function startGame() {
             document.getElementById('setupView').classList.add('hidden');
             document.getElementById('gameView').classList.remove('hidden');
+            saveGame();
             renderGame();
         }
 
         function renderGame() {
             const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
+            let newHTML = "";
 
-            // Calculate who is winning (lowest score) to highlight them
-            const scores = players.map(p => p.score);
-            const minScore = Math.min(...scores);
+            const totals = players.map(p => getPlayerTotal(p));
+            const minScore = Math.min(...totals);
 
             players.forEach((player, index) => {
-                const isWinning = player.score === minScore && currentRound > 1;
+                const currentTotal = totals[index];
+                const isWinning = currentTotal === minScore && currentRound > 1;
                 const scoreClass = isWinning ? 'lowest-score' : '';
                 const crown = isWinning ? '<span class="winner-crown">👑</span>' : '';
 
-                const html = `
+                newHTML += `
                 <div class="player-card">
                     <div class="player-info">
                         <div class="player-name">${crown}${player.name}</div>
-                        <div class="total-score ${scoreClass}" id="score-${index}">${player.score}</div>
+                        <div class="total-score ${scoreClass}">${currentTotal}</div>
                     </div>
                     <div class="round-input-wrapper">
-                        <span class="input-label">Round ${currentRound}</span>
-                        <input type="tel" class="round-input" id="input-${index}" placeholder="0" pattern="[0-9]*">
+                        <span class="input-label">Round ${currentRound > TOTAL_ROUNDS ? '-' : currentRound}</span>
+                        <input type="tel" class="round-input" id="input-${index}" placeholder="0" pattern="[0-9]*" ${currentRound > TOTAL_ROUNDS ? 'disabled' : ''}>
                     </div>
                 </div>`;
-                container.insertAdjacentHTML('beforeend', html);
             });
-
-            document.getElementById('roundDisplay').innerText = currentRound > TOTAL_ROUNDS ? "Game Over" : "Round " + currentRound;
-            document.getElementById('roundBadge').innerText = currentRound > TOTAL_ROUNDS ? "Done" : `${currentRound} / ${TOTAL_ROUNDS}`;
             
-            const btn = document.getElementById('nextRoundBtn');
-            if (currentRound > TOTAL_ROUNDS) {
-                btn.classList.add('hidden');
-                document.getElementById('resetBtn').classList.remove('hidden');
-                disableInputs();
+            container.innerHTML = newHTML;
+
+            // UI Updates
+            const isGameOver = currentRound > TOTAL_ROUNDS;
+            
+            if (isGameOver) {
+                const winners = players.filter((p, i) => totals[i] === minScore).map(p => p.name).join(' & ');
+                document.getElementById('roundDisplay').innerHTML = `🏆 ${winners} Wins!`;
+                document.getElementById('roundDisplay').style.color = 'var(--green)';
+                document.getElementById('roundBadge').innerText = "Done";
             } else {
-                btn.innerText = `Finish Round ${currentRound}`;
+                document.getElementById('roundDisplay').innerText = "Round " + currentRound;
+                document.getElementById('roundDisplay').style.color = 'var(--text)';
+                document.getElementById('roundBadge').innerText = `${currentRound} / ${TOTAL_ROUNDS}`;
             }
+            
+            // Toggle Edit Button
+            const editBtn = document.getElementById('editRoundBtn');
+            if (currentRound > 1 && !isGameOver) {
+                editBtn.classList.remove('hidden');
+            } else {
+                editBtn.classList.add('hidden');
+            }
+
+            const nextBtn = document.getElementById('nextRoundBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (isGameOver) {
+                nextBtn.classList.add('hidden');
+                resetBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                resetBtn.classList.add('hidden');
+                nextBtn.innerText = `Finish Round ${currentRound}`;
+            }
+
+            saveGame();
         }
 
         function finishRound() {
-            let allFilled = true;
-            
-            // 1. Validation & Calculation
             for(let i=0; i<players.length; i++) {
                 const input = document.getElementById(`input-${i}`);
                 const val = input.value;
                 if(val === '') {
-                    input.focus(); // Focus on the empty one
+                    input.focus(); 
                     return; 
                 }
-                players[i].score += parseInt(val);
+                players[i].scores.push(parseInt(val));
             }
 
-            // 2. Advance Game
             currentRound++;
             
-            // 3. Re-render UI
-            renderGame();
+            if (currentRound > TOTAL_ROUNDS) {
+                archiveCurrentGame();
+            }
 
-            // 4. Scroll to top
+            renderGame();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function disableInputs() {
-            const inputs = document.querySelectorAll('.round-input');
-            inputs.forEach(el => {
-                el.disabled = true;
-                el.value = "";
-                el.placeholder = "-";
-            });
-            
-            // Highlight Winner clearly
-            const scores = players.map(p => p.score);
-            const minScore = Math.min(...scores);
-            const winners = players.filter(p => p.score === minScore).map(p => p.name).join(' & ');
-            
-            document.getElementById('roundDisplay').innerHTML = `🏆 ${winners} Wins!`;
-            document.getElementById('roundDisplay').style.color = 'var(--green)';
+        function startNewGame() {
+            document.getElementById('confirmNewGameModal').classList.remove('hidden');
         }
 
-        function resetGame() {
-            if(confirm("Start a new game with same players?")) {
-                players.forEach(p => p.score = 0);
+        function confirmNewGame() {
+            players.forEach(p => p.scores = []);
+            currentRound = 1;
+            renderGame();
+            closeModal('confirmNewGameModal');
+        }
+
+        function goHome() {
+            if (currentRound > TOTAL_ROUNDS) {
+                document.getElementById('gameView').classList.add('hidden');
+                document.getElementById('setupView').classList.remove('hidden');
+                
+                players = [];
                 currentRound = 1;
-                document.getElementById('resetBtn').classList.add('hidden');
-                document.getElementById('nextRoundBtn').classList.remove('hidden');
-                renderGame();
+                renderChips(); 
+                localStorage.removeItem('kaboCurrentState'); 
+                checkPastGames(); 
             }
+        }
+
+        // --- Modals & Features ---
+        function openHistory() {
+            const container = document.getElementById('historyTableContainer');
+            if (currentRound === 1 && players[0].scores.length === 0) {
+                container.innerHTML = "<p style='text-align:center;'>No rounds completed yet.</p>";
+            } else {
+                let table = '<table class="history-table"><tr><th>Round</th>';
+                players.forEach(p => table += `<th>${p.name.substring(0,4)}</th>`);
+                table += '</tr>';
+
+                for (let r = 0; r < Math.min(currentRound - 1, TOTAL_ROUNDS); r++) {
+                    table += `<tr><td><strong>${r + 1}</strong></td>`;
+                    players.forEach(p => {
+                        table += `<td>${p.scores[r] !== undefined ? p.scores[r] : '-'}</td>`;
+                    });
+                    table += '</tr>';
+                }
+                table += '</table>';
+                container.innerHTML = table;
+            }
+            document.getElementById('historyModal').classList.remove('hidden');
+        }
+
+        function openEditModal() {
+            const targetRound = currentRound - 1;
+            document.getElementById('editRoundNumber').innerText = targetRound;
+            
+            const container = document.getElementById('editInputsContainer');
+            container.innerHTML = '';
+
+            players.forEach((player, index) => {
+                const lastScore = player.scores[targetRound - 1]; 
+                const html = `
+                <div class="edit-row">
+                    <span style="font-weight:bold;">${player.name}</span>
+                    <input type="tel" class="round-input" id="edit-input-${index}" value="${lastScore}" style="background:var(--input-bg); border:1px solid var(--subtext);">
+                </div>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function saveEditedRound() {
+            const targetRoundIndex = currentRound - 2; 
+
+            for(let i=0; i<players.length; i++) {
+                const input = document.getElementById(`edit-input-${i}`);
+                if(input.value === '') {
+                    input.focus();
+                    return;
+                }
+                players[i].scores[targetRoundIndex] = parseInt(input.value);
+            }
+
+            closeModal('editModal');
+            renderGame(); 
+        }
+
+        function openLeaderboard() {
+            const pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
+            const winCounts = {};
+
+            pastGames.forEach(game => {
+                const totals = game.players.map(p => p.scores.reduce((a, b) => a + b, 0));
+                const minScore = Math.min(...totals);
+                
+                game.players.forEach((p, index) => {
+                    if (totals[index] === minScore) {
+                        winCounts[p.name] = (winCounts[p.name] || 0) + 1;
+                    }
+                });
+            });
+
+            const sortedLeaderboard = Object.entries(winCounts).sort((a, b) => b[1] - a[1]);
+
+            let html = '<table class="history-table"><tr><th>Player</th><th>Wins</th></tr>';
+            sortedLeaderboard.forEach(([name, wins]) => {
+                html += `<tr><td>${name}</td><td>${wins} 👑</td></tr>`;
+            });
+            html += '</table>';
+
+            document.getElementById('leaderboardContainer').innerHTML = html;
+            document.getElementById('leaderboardModal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
         }
     </script>
 </body>
