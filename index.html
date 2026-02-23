@@ -31,38 +31,37 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
-            padding-bottom: 100px; 
+            padding: 15px;
+            padding-bottom: 90px;
             -webkit-tap-highlight-color: transparent;
         }
 
         h1, h2, h3 { text-align: center; margin: 10px 0; }
         
-        /* Setup Screen */
         .setup-container {
             max-width: 500px;
-            margin: 40px auto;
+            margin: 30px auto;
             text-align: center;
         }
         
         input[type="text"], input[type="tel"] {
             width: 70%;
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
             border: none;
             background: var(--card);
             color: var(--text);
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 15px;
         }
 
         .btn {
             background: var(--blue);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 12px 20px;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
@@ -76,27 +75,27 @@
         .chip-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .chip {
             background: var(--card);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
+            font-size: 14px;
             font-weight: 500;
         }
 
-        /* Game Screen */
         .top-controls {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .top-controls .btn {
-            padding: 10px;
+            padding: 8px;
             font-size: 14px;
             margin-bottom: 0;
         }
@@ -105,28 +104,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 0 10px;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+
+        .header-info h2 {
+            margin: 0;
+            font-size: 20px;
         }
 
         .round-badge {
             background: var(--subtext);
             color: white;
-            padding: 5px 12px;
+            padding: 5px 10px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
         }
 
         .player-card {
             background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .player-info {
@@ -134,7 +138,7 @@
         }
 
         .player-name {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--subtext);
             font-weight: 600;
             text-transform: uppercase;
@@ -142,9 +146,9 @@
         }
 
         .total-score {
-            font-size: 38px;
+            font-size: 30px;
             font-weight: 800;
-            margin-top: 5px;
+            margin-top: 2px;
             font-variant-numeric: tabular-nums;
         }
 
@@ -152,17 +156,17 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 5px;
+            gap: 3px;
         }
 
         .round-input {
-            width: 70px;
-            height: 50px;
+            width: 65px;
+            height: 42px;
             background: var(--input-bg);
             border: none;
             border-radius: 10px;
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             color: var(--text);
             font-weight: 600;
             padding: 0;
@@ -175,19 +179,18 @@
         }
 
         .input-label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--subtext);
         }
 
         .action-bar {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
             z-index: 100;
         }
 
-        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -219,9 +222,10 @@
         }
 
         .history-table th, .history-table td {
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             border-bottom: 1px solid var(--input-bg);
+            font-size: 16px;
         }
         
         .history-table th {
@@ -240,6 +244,16 @@
             margin-bottom: 10px;
         }
 
+        .clickable-link {
+            color: var(--blue);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .clickable-link:hover {
+            text-decoration: underline;
+        }
+
         .winner-crown { color: #FFD700; margin-right: 5px; }
         
         .hidden { display: none !important; }
@@ -252,7 +266,7 @@
 
     <div id="setupView" class="setup-container">
         <h1>Kabo Tracker</h1>
-        <p style="color:var(--subtext)">Add 4+ players</p>
+        <p style="color:var(--subtext); font-size: 14px; margin-top: -5px;">Add 4+ players</p>
         
         <input type="text" id="newPlayerName" placeholder="Player Name" autocomplete="off">
         <button class="btn" onclick="addPlayer()">Add</button>
@@ -261,17 +275,19 @@
         
         <button id="startBtn" class="btn" onclick="startGame()" disabled style="background: var(--green);">Start Game</button>
         
-        <div style="margin-top: 30px; border-top: 1px solid var(--subtext); padding-top: 20px;" id="pastGamesSection" class="hidden">
+        <div style="margin-top: 25px; border-top: 1px solid var(--subtext); padding-top: 15px;" id="pastGamesSection" class="hidden">
             <h3>Saved Games & Leaderboard</h3>
-            <p style="color:var(--subtext); font-size:14px; margin-bottom: 15px;">Previous games are stored in your browser.</p>
-            <button class="btn btn-secondary" onclick="openLeaderboard()">View Leaderboard</button>
+            <button class="btn btn-secondary" onclick="openLeaderboard()" style="margin-bottom: 15px;">View Leaderboard</button>
+            
+            <div id="pastGamesList" style="text-align: left; margin-bottom: 20px;"></div>
+
             <button class="btn btn-outline" onclick="clearPastGames()">Clear History</button>
         </div>
     </div>
 
     <div id="gameView" class="hidden">
         <div class="top-controls">
-            <button class="btn btn-secondary" onclick="openHistory()">Game History</button>
+            <button class="btn btn-secondary" onclick="openHistory()">Game Scores</button>
             <button id="editRoundBtn" class="btn btn-secondary hidden" onclick="openEditModal()">Edit Last Round</button>
         </div>
 
@@ -290,9 +306,9 @@
 
     <div id="historyModal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h2>Game History</h2>
+            <h2>Current Scores</h2>
             <div id="historyTableContainer"></div>
-            <button class="btn" onclick="closeModal('historyModal')" style="margin-top: 20px;">Close</button>
+            <button class="btn" onclick="closeModal('historyModal')" style="margin-top: 15px;">Close</button>
         </div>
     </div>
 
@@ -300,7 +316,7 @@
         <div class="modal-content">
             <h2>Edit Round <span id="editRoundNumber"></span></h2>
             <div id="editInputsContainer"></div>
-            <button class="btn" onclick="saveEditedRound()" style="margin-top: 20px; background: var(--green);">Save Changes</button>
+            <button class="btn" onclick="saveEditedRound()" style="margin-top: 15px; background: var(--green);">Save Changes</button>
             <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
         </div>
     </div>
@@ -308,12 +324,29 @@
     <div id="leaderboardModal" class="modal-overlay hidden">
         <div class="modal-content">
             <h2>All-Time Leaderboard</h2>
+            <p style="font-size: 12px; color: var(--subtext); text-align: center;">Click a player's name to see their wins.</p>
             <div id="leaderboardContainer"></div>
-            <button class="btn" onclick="closeModal('leaderboardModal')" style="margin-top: 20px;">Close</button>
+            <button class="btn" onclick="closeModal('leaderboardModal')" style="margin-top: 15px;">Close</button>
         </div>
     </div>
 
-    <div id="confirmClearModal" class="modal-overlay hidden">
+    <div id="playerWinsModal" class="modal-overlay hidden" style="z-index: 210;">
+        <div class="modal-content">
+            <h2 id="playerWinsTitle">Player Wins</h2>
+            <div id="playerWinsContainer"></div>
+            <button class="btn" onclick="closeModal('playerWinsModal')" style="margin-top: 15px;">Back</button>
+        </div>
+    </div>
+
+    <div id="pastGameDetailsModal" class="modal-overlay hidden" style="z-index: 220;">
+        <div class="modal-content">
+            <h2 id="pastGameDetailsTitle">Game Details</h2>
+            <div id="pastGameDetailsContainer"></div>
+            <button class="btn" onclick="closeModal('pastGameDetailsModal')" style="margin-top: 15px;">Close Details</button>
+        </div>
+    </div>
+
+    <div id="confirmClearModal" class="modal-overlay hidden" style="z-index: 300;">
         <div class="modal-content" style="text-align: center;">
             <h2>Clear History?</h2>
             <p style="color:var(--subtext); margin-bottom: 20px;">Are you sure you want to delete all saved past games? This cannot be undone.</p>
@@ -359,10 +392,19 @@
             }
         }
 
+        function getFormattedDate() {
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
         function archiveCurrentGame() {
             let pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
+            
             pastGames.push({
-                date: new Date().toLocaleString(),
+                date: getFormattedDate(),
                 players: JSON.parse(JSON.stringify(players))
             });
             localStorage.setItem('kaboPastGames', JSON.stringify(pastGames));
@@ -373,9 +415,27 @@
             const pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
             if (pastGames.length > 0) {
                 document.getElementById('pastGamesSection').classList.remove('hidden');
+                renderPastGamesList(pastGames);
             } else {
                 document.getElementById('pastGamesSection').classList.add('hidden');
             }
+        }
+
+        function renderPastGamesList(pastGames) {
+            let html = '';
+            for (let i = pastGames.length - 1; i >= 0; i--) {
+                const game = pastGames[i];
+                const totals = game.players.map(p => p.scores.reduce((a, b) => a + b, 0));
+                const minScore = Math.min(...totals);
+                const winners = game.players.filter((p, index) => totals[index] === minScore).map(p => p.name).join(' & ');
+
+                html += `
+                <div style="background: var(--card); padding: 12px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div class="clickable-link" onclick="openPastGameDetails(${i})" style="font-size: 15px;">📅 ${game.date}</div>
+                    <div style="color: var(--subtext); font-size: 13px; margin-top: 4px;">🏆 Winner: ${winners} (${minScore} pts)</div>
+                </div>`;
+            }
+            document.getElementById('pastGamesList').innerHTML = html;
         }
 
         function clearPastGames() {
@@ -531,12 +591,14 @@
         }
 
         // --- Modals & Features ---
+        
+        // Detailed Active Game History - Shows all rounds
         function openHistory() {
             const container = document.getElementById('historyTableContainer');
             if (currentRound === 1 && players[0].scores.length === 0) {
                 container.innerHTML = "<p style='text-align:center;'>No rounds completed yet.</p>";
             } else {
-                let table = '<table class="history-table"><tr><th>Round</th>';
+                let table = '<table class="history-table"><tr><th>R</th>';
                 players.forEach(p => table += `<th>${p.name.substring(0,4)}</th>`);
                 table += '</tr>';
 
@@ -547,7 +609,15 @@
                     });
                     table += '</tr>';
                 }
-                table += '</table>';
+
+                // Bottom Total Row for convenience
+                table += '<tr style="background: var(--input-bg); font-weight: bold;"><td>Tot</td>';
+                players.forEach(p => {
+                    const total = p.scores.reduce((a, b) => a + b, 0);
+                    table += `<td>${total}</td>`;
+                });
+                table += '</tr></table>';
+
                 container.innerHTML = table;
             }
             document.getElementById('historyModal').classList.remove('hidden');
@@ -608,12 +678,61 @@
 
             let html = '<table class="history-table"><tr><th>Player</th><th>Wins</th></tr>';
             sortedLeaderboard.forEach(([name, wins]) => {
-                html += `<tr><td>${name}</td><td>${wins} 👑</td></tr>`;
+                html += `<tr><td><span class="clickable-link" onclick="openPlayerWins('${encodeURIComponent(name)}')">${name}</span></td><td>${wins} 👑</td></tr>`;
             });
             html += '</table>';
 
             document.getElementById('leaderboardContainer').innerHTML = html;
             document.getElementById('leaderboardModal').classList.remove('hidden');
+        }
+
+        function openPlayerWins(encodedName) {
+            const name = decodeURIComponent(encodedName);
+            const pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
+            let html = '';
+            let winCount = 0;
+
+            for (let i = pastGames.length - 1; i >= 0; i--) {
+                const game = pastGames[i];
+                const totals = game.players.map(p => p.scores.reduce((a, b) => a + b, 0));
+                const minScore = Math.min(...totals);
+                
+                const isWinner = game.players.some((p, index) => p.name === name && totals[index] === minScore);
+                
+                if (isWinner) {
+                    winCount++;
+                    html += `
+                    <div style="background: var(--input-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px;">
+                        <div class="clickable-link" onclick="openPastGameDetails(${i})" style="font-size: 15px;">📅 ${game.date}</div>
+                        <div style="color: var(--subtext); font-size: 13px; margin-top: 4px;">Winning Score: ${minScore} pts</div>
+                    </div>`;
+                }
+            }
+
+            document.getElementById('playerWinsTitle').innerText = `${name}'s Wins (${winCount})`;
+            document.getElementById('playerWinsContainer').innerHTML = html;
+            document.getElementById('playerWinsModal').classList.remove('hidden');
+        }
+
+        // Simplified Past Game Details - Just shows totals
+        function openPastGameDetails(gameIndex) {
+            const pastGames = JSON.parse(localStorage.getItem('kaboPastGames') || '[]');
+            const game = pastGames[gameIndex];
+            
+            if (!game) return;
+
+            document.getElementById('pastGameDetailsTitle').innerText = `Game on ${game.date}`;
+
+            let table = '<table class="history-table"><tr><th>Player</th><th>Total Score</th></tr>';
+
+            game.players.forEach(p => {
+                const total = p.scores.reduce((a, b) => a + b, 0);
+                table += `<tr><td>${p.name}</td><td><strong>${total}</strong></td></tr>`;
+            });
+            table += '</table>';
+
+            document.getElementById('pastGameDetailsContainer').innerHTML = table;
+            document.getElementById('pastGameDetailsModal').classList.remove('hidden');
         }
 
         function closeModal(id) {
